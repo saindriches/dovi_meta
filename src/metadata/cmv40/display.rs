@@ -53,7 +53,7 @@ impl IntoCMV29<CharacteristicsLegacy> for Characteristics {
             level: 0,
             id: self.id,
             name: self.name,
-            primaries: self.primaries,
+            primaries: self.primaries.into_cmv29(),
             white_point: self.white_point.into_cmv29(),
             peak_brightness: self.peak_brightness,
             minimum_brightness: self.minimum_brightness,

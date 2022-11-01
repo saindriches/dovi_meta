@@ -2,6 +2,7 @@ use serde::Serialize;
 
 use crate::cmv29::{AlgorithmVersions, Characteristics, Shot};
 use crate::display::Chromaticity;
+use crate::MDFType::CMV29;
 use crate::{cmv40, ColorSpace, Eotf, IntoCMV29, Level6, MDFType, Primaries, SignalRange, UUIDv4};
 
 #[derive(Debug, Serialize)]
@@ -82,7 +83,7 @@ impl From<cmv40::TrackPluginNode> for TrackPluginNode {
     fn from(t: cmv40::TrackPluginNode) -> Self {
         Self {
             dolby_edr: TrackDolbyEDR {
-                algorithm_versions: Default::default(),
+                algorithm_versions: CMV29(AlgorithmVersions::default()),
                 characteristics: Characteristics {
                     level: 0,
                     mastering_display: t.dv_global_data.mastering_display.into_cmv29(),
