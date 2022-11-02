@@ -1,4 +1,8 @@
-# **dovi_meta** [![CI](https://github.com/saindriches/dovi_meta/workflows/CI/badge.svg)](https://github.com/saindriches/dovi_meta/actions/workflows/ci.yml) [![Artifacts](https://github.com/saindriches/dovi_meta/workflows/Artifacts/badge.svg)](https://github.com/saindriches/dovi_meta/actions/workflows/release.yml)
+# **dovi_meta** 
+[![CI](https://github.com/saindriches/dovi_meta/workflows/CI/badge.svg)](https://github.com/saindriches/dovi_meta/actions/workflows/ci.yml)
+[![Artifacts](https://github.com/saindriches/dovi_meta/workflows/Artifacts/badge.svg)](https://github.com/saindriches/dovi_meta/actions/workflows/release.yml)
+[![Github all releases](https://img.shields.io/github/downloads/saindriches/dovi_meta/total.svg)](https://GitHub.com/saindriches/dovi_meta/releases/)
+
 
 **`dovi_meta`** is a CLI tool for creating Dolby Vision XML metadata from an encoded deliverable with binary metadata.
 
