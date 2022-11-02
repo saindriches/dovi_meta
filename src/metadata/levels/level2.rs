@@ -13,10 +13,8 @@ use super::TrimSixField;
 #[derive(Debug, Clone, PartialEq, Default)]
 pub struct Level2 {
     pub level: u8,
-    // #[serde(rename = "$unflatten=TID")]
-    pub tid: u8,
+    pub tid: usize,
     // Format: 0 0 0 f32 f32 f32 f32 f32 f32
-    // #[serde(rename = "$unflatten=Trim")]
     pub trim: MDFType<TrimSixField>,
 }
 
@@ -55,7 +53,7 @@ impl IntoCMV29<Self> for Level2 {
 
 impl Level2 {
     pub fn with_primary_index(block: &ExtMetadataBlockLevel2, primary: Option<usize>) -> Self {
-        // Actually the only possible value is -1
+        // identical definition for all negative values, use -1 for v2.0.5+
         let ms_weight = if block.ms_weight < 0 {
             -1.0
         } else {
@@ -66,8 +64,12 @@ impl Level2 {
         let primary = if luminance == 100 {
             1
         } else {
-            primary.unwrap_or(2)
+            // P3 D65
+            primary.unwrap_or(0)
         };
+
+        // For convenience, use target_max_pq as Level2 custom target display id
+        let tid = find_target_id(luminance, primary).unwrap_or(block.target_max_pq as usize);
 
         let mut trim = TrimSixField([
             f32_from_rpu_u12_with_bias(block.trim_slope),
@@ -82,7 +84,7 @@ impl Level2 {
 
         Self {
             level: 2,
-            tid: find_target_id(luminance, primary) as u8,
+            tid,
             trim: CMV40(trim),
         }
     }
@@ -90,7 +92,7 @@ impl Level2 {
 
 impl From<&ExtMetadataBlockLevel2> for Level2 {
     fn from(block: &ExtMetadataBlockLevel2) -> Self {
-        // BT.2020
+        // P3 D65
         Self::with_primary_index(block, None)
     }
 }

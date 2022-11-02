@@ -62,9 +62,9 @@ Currently, the only available subcommand is **`convert`**
   ```console
   dovi_meta convert RPU.bin metadata.xml --skip 24 --rate 30000/1001 --size 1920x1080
   ```
-  The default color space of mastering display is **BT.2020**, the default EOTF is **PQ**.
+  The default color encoding  is **BT.2020 PQ 16-bit RGB Full Range**.
 
-  The default color space of target display (except the anchor target) is **P3 D65** for CM v2.9 XML, also for CM v4.0 XML when it can't be determined by input.
+  The default color space of mastering display and target displays (except the anchor target) is **P3 D65** for CM v2.9 XML, also for CM v4.0 XML when it can't be determined by input.
 
 
 ## **Notes**

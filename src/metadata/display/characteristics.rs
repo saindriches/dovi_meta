@@ -109,10 +109,10 @@ impl Characteristics {
         }
     }
 
-    fn get_primary_target(block: &ExtMetadataBlockLevel2, primary: Primaries) -> Option<Self> {
+    fn get_primary_target(block: &ExtMetadataBlockLevel2, primary: Primaries) -> Self {
         let max_luminance = Self::max_u16_from_rpu_pq_u12(block.target_max_pq);
 
-        let primary = if let Some(primary) = primary.get_index() {
+        let primary_index = if let Some(primary) = primary.get_index() {
             if max_luminance == 100 {
                 1
             } else {
@@ -122,7 +122,24 @@ impl Characteristics {
             0
         };
 
-        Self::get_display(PREDEFINED_TARGET_DISPLAYS, max_luminance, primary)
+        if let Some(target) =
+            Self::get_display(PREDEFINED_TARGET_DISPLAYS, max_luminance, primary_index)
+        {
+            target
+        } else {
+            let mut target = Self {
+                id: block.target_max_pq as usize,
+                primary_index,
+                primaries: primary,
+                peak_brightness: max_luminance,
+                minimum_brightness: 0.0,
+                eotf: Eotf::Pq,
+                ..Default::default()
+            };
+
+            target.update_name();
+            target
+        }
     }
 
     fn get_target(block: &ExtMetadataBlockLevel8) -> Option<Self> {
@@ -156,9 +173,7 @@ impl Characteristics {
 
         vdr.level_blocks_iter(2).for_each(|b| {
             if let ExtMetadataBlock::Level2(b) = b {
-                if let Some(d) = Self::get_primary_target(b, primary) {
-                    targets.push(d)
-                }
+                targets.push(Self::get_primary_target(b, primary))
             }
         });
 
@@ -181,7 +196,8 @@ impl Characteristics {
     }
 
     pub fn get_source_or_default(vdr: &VdrDmData) -> Self {
-        let primary = Primaries::from(vdr).get_index().unwrap_or(0);
+        let primary = Primaries::from(vdr);
+        let primary_index = primary.get_index().unwrap_or(0);
 
         // Prefer level 6 metadata
         let max_luminance = match vdr.get_block(6) {
@@ -189,8 +205,38 @@ impl Characteristics {
             _ => Characteristics::max_u16_from_rpu_pq_u12(vdr.source_max_pq),
         };
 
-        Self::get_display(PREDEFINED_MASTERING_DISPLAYS, max_luminance, primary)
-            .unwrap_or_else(Self::default_source)
+        if let Some(source) =
+            Self::get_display(PREDEFINED_MASTERING_DISPLAYS, max_luminance, primary_index)
+        {
+            source
+        } else {
+            let mut source = Self::default_source();
+
+            if vdr.get_block(254).is_some() {
+                // Custom mastering display for CM v4.0
+                // For convenience, use source_max_pq as custom mastering display id
+                source.id = vdr.source_max_pq as usize;
+                source.primaries = primary;
+
+                source.primary_index = if primary.get_index().is_none() {
+                    // Random invalid value
+                    255
+                } else {
+                    primary_index
+                };
+
+                // BT.709 BT.1886
+                if primary_index == 1 {
+                    source.eotf = Eotf::GammaBT1886;
+                    source.peak_brightness = 100;
+                    // Default source (4000-nit) min_brightness is 0.005-nit
+                }
+
+                source.update_name();
+            }
+
+            source
+        }
     }
 
     /*pub fn update_luminance_range_with_l6_block(&mut self, block: &ExtMetadataBlockLevel6) {

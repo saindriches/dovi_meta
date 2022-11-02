@@ -58,7 +58,7 @@ pub const PREDEFINED_TARGET_DISPLAYS: &[[usize; 6]] = &[
     [  38, 2, 2000,  0, 0, 0],
     [  48, 0, 1000,  0, 0, 0],
     [  49, 2, 1000,  0, 0, 0],
-    [9003, 1,  600,  7, 2, 0], // BETA
+    // [9003, 1,  600,  7, 2, 0], // BETA
 ];
 
 // pub const CMV29_TARGET_DISPLAYS_LIST: &[u8] = &[1, 27, 28, 37, 38, 48, 49];
@@ -78,8 +78,8 @@ pub fn pq2l(pq: f32) -> f32 {
     y * ST2084_Y_MAX
 }
 
-pub fn find_target_id(max: usize, primary: usize) -> usize {
-    get_display_id(PREDEFINED_TARGET_DISPLAYS, max, primary).unwrap_or(0)
+pub fn find_target_id(max: usize, primary: usize) -> Option<usize> {
+    get_display_id(PREDEFINED_TARGET_DISPLAYS, max, primary)
 }
 
 fn get_display_id(list: &[[usize; 6]], max_luminance: usize, primary: usize) -> Option<usize> {
