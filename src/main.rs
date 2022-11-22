@@ -13,7 +13,7 @@ mod metadata;
 
 // Some Clap features are broken, keep it for now.
 #[derive(Parser, Debug)]
-#[clap(name = env!("CARGO_PKG_NAME"), author = "Rainbaby", about = "CLI tool for creating Dolby Vision XML metadata from an encoded deliverable with binary metadata.", version = env!("VERGEN_GIT_SEMVER_LIGHTWEIGHT"))]
+#[clap(name = env!("CARGO_PKG_NAME"), author = "Rainbaby", about = "CLI tool for creating Dolby Vision XML metadata from an encoded deliverable with binary metadata.", version = option_env!("VERGEN_GIT_SEMVER_LIGHTWEIGHT").unwrap_or(env!("VERGEN_BUILD_SEMVER")))]
 struct Opt {
     #[clap(subcommand)]
     cmd: Command,

@@ -26,4 +26,4 @@ anyhow = "1.0.62"
 itertools = "0.10.3"
 
 [build-dependencies]
-vergen = { version = "7.4.2", default-features = false, features = ["git"] }
+vergen = { version = "7.4.2", default-features = false, features = ["build", "cargo", "git"] }
