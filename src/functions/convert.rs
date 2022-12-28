@@ -44,7 +44,7 @@ impl Converter {
 
         println!("Parsing RPU file...");
 
-        let rpus = parse_rpu_file(&input)?;
+        let rpus = parse_rpu_file(input)?;
 
         let mut count = if let Some(count) = args.count {
             if count + args.skip > rpus.len() {
