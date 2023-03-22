@@ -62,7 +62,7 @@ pub struct ConvertArgs {
     #[clap(
         short = 'k',
         long,
-        requires = "trim",
+        requires = "skip",
         help = "Keep the offset of frames when --skip is set"
     )]
     pub keep_offset: bool,
