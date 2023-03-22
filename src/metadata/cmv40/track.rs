@@ -11,15 +11,18 @@ use crate::cmv40::Shot;
 use crate::display::Chromaticity;
 use crate::levels::*;
 use crate::MDFType::CMV40;
-use crate::{cmv29, display, ColorSpace, Eotf, IntoCMV29, MDFType, Primaries, SignalRange, UUIDv4};
+use crate::{
+    cmv29, display, ColorSpace, ColorSpaceEnum, Encoding, EncodingEnum, IntoCMV29, MDFType,
+    Primaries, SignalRange, SignalRangeEnum, UUIDv4,
+};
 
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct Track {
-    #[serde(rename = "$unflatten=TrackName")]
+    #[serde(rename = "TrackName")]
     pub track_name: String,
     #[serde(rename = "UniqueID")]
     pub unique_id: UUIDv4,
-    #[serde(rename = "$unflatten=EditRate")]
+    #[serde(rename = "EditRate")]
     pub edit_rate: MDFType<EditRate>,
     #[serde(rename = "ColorEncoding")]
     pub color_encoding: ColorEncoding,
@@ -158,17 +161,17 @@ impl From<&VdrDmData> for TrackPluginNode {
 pub struct ColorEncoding {
     #[serde(rename = "Primaries")]
     pub primaries: Primaries,
-    #[serde(rename = "$unflatten=WhitePoint")]
+    #[serde(rename = "WhitePoint")]
     pub white_point: MDFType<Chromaticity>,
-    #[serde(rename = "$unflatten=PeakBrightness")]
+    #[serde(rename = "PeakBrightness")]
     pub peak_brightness: usize,
-    #[serde(rename = "$unflatten=MinimumBrightness")]
+    #[serde(rename = "MinimumBrightness")]
     pub minimum_brightness: usize,
-    #[serde(rename = "$unflatten=Encoding")]
-    pub encoding: Eotf,
-    #[serde(rename = "$unflatten=ColorSpace")]
+    #[serde(rename = "Encoding")]
+    pub encoding: Encoding,
+    #[serde(rename = "ColorSpace")]
     pub color_space: ColorSpace,
-    #[serde(rename = "$unflatten=SignalRange")]
+    #[serde(rename = "SignalRange")]
     pub signal_range: SignalRange,
 }
 
@@ -182,9 +185,15 @@ impl Default for ColorEncoding {
             white_point: CMV40(p.white_point),
             peak_brightness: 10000,
             minimum_brightness: 0,
-            encoding: Eotf::Pq,
-            color_space: ColorSpace::Rgb,
-            signal_range: SignalRange::Computer,
+            encoding: Encoding {
+                encoding: EncodingEnum::Pq,
+            },
+            color_space: ColorSpace {
+                color_space: ColorSpaceEnum::Rgb,
+            },
+            signal_range: SignalRange {
+                signal_range: SignalRangeEnum::Computer,
+            },
         }
     }
 }
@@ -192,6 +201,7 @@ impl Default for ColorEncoding {
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct DVGlobalData {
     // 0
+    #[serde(rename = "@level")]
     pub level: usize,
     #[serde(rename = "MasteringDisplay")]
     pub mastering_display: Characteristics,

@@ -3,10 +3,11 @@ use serde::Serialize;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Level6 {
+    #[serde(rename = "@level")]
     pub level: usize,
-    #[serde(rename = "$unflatten=MaxCLL")]
+    #[serde(rename = "MaxCLL")]
     pub max_cll: usize,
-    #[serde(rename = "$unflatten=MaxFALL")]
+    #[serde(rename = "MaxFALL")]
     pub max_fall: usize,
 }
 

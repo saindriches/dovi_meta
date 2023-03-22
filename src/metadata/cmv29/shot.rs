@@ -24,7 +24,7 @@ pub struct Shot {
 pub struct ShotSource {
     #[serde(rename = "ParentID")]
     pub parent_id: UUIDv4,
-    #[serde(rename = "$unflatten=In")]
+    #[serde(rename = "In")]
     pub in_: usize,
 }
 
@@ -39,9 +39,9 @@ impl From<Source> for ShotSource {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct Record {
-    #[serde(rename = "$unflatten=In")]
+    #[serde(rename = "In")]
     pub in_: usize,
-    #[serde(rename = "$unflatten=Duration")]
+    #[serde(rename = "Duration")]
     pub duration: usize,
 }
 

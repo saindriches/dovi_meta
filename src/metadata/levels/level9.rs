@@ -6,12 +6,13 @@ use crate::{display, MDFType};
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Level9 {
+    #[serde(rename = "@level")]
     pub level: u8,
     // 255
-    #[serde(rename = "$unflatten=SourceColorModel")]
+    #[serde(rename = "SourceColorModel")]
     pub source_color_model: u8,
     // Format: f32 f32 f32 f32 f32 f32 f32 f32
-    #[serde(rename = "$unflatten=SourceColorPrimary")]
+    #[serde(rename = "SourceColorPrimary")]
     pub source_color_primary: MDFType<display::Primaries>,
 }
 

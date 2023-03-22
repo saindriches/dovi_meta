@@ -9,9 +9,10 @@ use super::AspectRatio;
 
 #[derive(Debug, Clone, Serialize, Hash, PartialEq, Eq)]
 pub struct Level5 {
+    #[serde(rename = "@level")]
     pub level: u8,
     // Format: f32 f32
-    #[serde(rename = "$unflatten=AspectRatio")]
+    #[serde(rename = "AspectRatio")]
     pub aspect_ratio: MDFType<AspectRatio>,
 }
 

@@ -8,8 +8,9 @@ use super::ImageCharacter;
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct Level1 {
+    #[serde(rename = "@level")]
     pub level: u8,
-    #[serde(rename = "$unflatten=ImageCharacter")]
+    #[serde(rename = "ImageCharacter")]
     pub image_character: MDFType<ImageCharacter>,
 }
 

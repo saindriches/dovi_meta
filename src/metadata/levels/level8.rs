@@ -8,21 +8,22 @@ use super::TrimSixField;
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct Level8 {
+    #[serde(rename = "@level")]
     pub level: u8,
-    #[serde(rename = "$unflatten=TID")]
+    #[serde(rename = "TID")]
     pub tid: u8,
     // Format: f32 f32 f32 f32 f32 f32
-    #[serde(rename = "$unflatten=L8Trim")]
+    #[serde(rename = "L8Trim")]
     pub l8_trim: MDFType<TrimSixField>,
-    #[serde(rename = "$unflatten=MidContrastBias")]
+    #[serde(rename = "MidContrastBias")]
     pub mid_contrast_bias: f32,
-    #[serde(rename = "$unflatten=HighlightClipping")]
+    #[serde(rename = "HighlightClipping")]
     pub highlight_clipping: f32,
     // Format: f32 f32 f32 f32 f32 f32
-    #[serde(rename = "$unflatten=SaturationVectorField")]
+    #[serde(rename = "SaturationVectorField")]
     pub sat_vector_field: MDFType<TrimSixField>,
     // Format: f32 f32 f32 f32 f32 f32
-    #[serde(rename = "$unflatten=HueVectorField")]
+    #[serde(rename = "HueVectorField")]
     pub hue_vector_field: MDFType<TrimSixField>,
 }
 

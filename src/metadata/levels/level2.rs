@@ -33,9 +33,9 @@ impl Serialize for Level2 {
 
         let mut state = serializer.serialize_struct("Level2", 3)?;
 
-        state.serialize_field("level", &self.level)?;
-        state.serialize_field("$unflatten=TID", &self.tid)?;
-        state.serialize_field("$unflatten=Trim", &trim.with_new_inner(new_trim))?;
+        state.serialize_field("@level", &self.level)?;
+        state.serialize_field("TID", &self.tid)?;
+        state.serialize_field("Trim", &trim.with_new_inner(new_trim))?;
 
         state.end()
     }

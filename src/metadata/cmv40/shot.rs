@@ -201,8 +201,8 @@ impl From<&VdrDmData> for DVDynamicData {
 // TODO: Start duration is 1
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct Record {
-    #[serde(rename = "$unflatten=In")]
+    #[serde(rename = "In")]
     pub in_: usize,
-    #[serde(rename = "$unflatten=Duration")]
+    #[serde(rename = "Duration")]
     pub duration: usize,
 }

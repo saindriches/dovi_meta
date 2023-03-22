@@ -4,29 +4,30 @@ use crate::cmv29::CharacteristicsLegacy;
 use crate::display::Chromaticity;
 use crate::MDFType::CMV40;
 use crate::{
-    display, ApplicationType, ColorSpace, Eotf, IntoCMV29, MDFType, Primaries, SignalRange,
+    display, ApplicationType, ColorSpace, ColorSpaceEnum, Encoding, IntoCMV29, MDFType, Primaries,
+    SignalRange, SignalRangeEnum,
 };
 
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct Characteristics {
-    #[serde(rename = "$unflatten=ID")]
+    #[serde(rename = "ID")]
     pub id: usize,
-    #[serde(rename = "$unflatten=Name")]
+    #[serde(rename = "Name")]
     pub name: String,
     #[serde(rename = "Primaries")]
     pub primaries: Primaries,
-    #[serde(rename = "$unflatten=WhitePoint")]
+    #[serde(rename = "WhitePoint")]
     pub white_point: MDFType<Chromaticity>,
-    #[serde(rename = "$unflatten=PeakBrightness")]
+    #[serde(rename = "PeakBrightness")]
     pub peak_brightness: usize,
-    #[serde(rename = "$unflatten=MinimumBrightness")]
+    #[serde(rename = "MinimumBrightness")]
     pub minimum_brightness: f32,
-    #[serde(rename = "$unflatten=EOTF")]
-    pub eotf: Eotf,
-    #[serde(rename = "$unflatten=DiagonalSize")]
+    #[serde(rename = "EOTF")]
+    pub eotf: Encoding,
+    #[serde(rename = "DiagonalSize")]
     pub diagonal_size: usize,
     // Version 5.0.0+
-    #[serde(rename = "$unflatten=ApplicationType")]
+    #[serde(rename = "ApplicationType")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub application_type: Option<ApplicationType>,
 }
@@ -40,7 +41,7 @@ impl From<display::Characteristics> for Characteristics {
             white_point: CMV40(d.primaries.white_point),
             peak_brightness: d.peak_brightness,
             minimum_brightness: d.minimum_brightness,
-            eotf: d.eotf,
+            eotf: d.encoding,
             diagonal_size: d.diagonal_size,
             application_type: None,
         }
@@ -60,8 +61,12 @@ impl IntoCMV29<CharacteristicsLegacy> for Characteristics {
             diagonal_size: self.diagonal_size,
             encoding: self.eotf,
             bit_depth: 16,
-            color_space: ColorSpace::Rgb,
-            signal_range: SignalRange::Computer,
+            color_space: ColorSpace {
+                color_space: ColorSpaceEnum::Rgb,
+            },
+            signal_range: SignalRange {
+                signal_range: SignalRangeEnum::Computer,
+            },
         }
     }
 }

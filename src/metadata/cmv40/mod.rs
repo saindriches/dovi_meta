@@ -8,8 +8,8 @@ pub use track::*;
 
 use crate::XMLVersion::{V402, V510};
 use crate::{
-    cmv29, ApplicationType, IntoCMV29, Level5, RevisionHistory, UUIDv4, Version, XMLVersion,
-    CMV40_MIN_VERSION, UHD_AR,
+    cmv29, ApplicationType, ApplicationTypeEnum, IntoCMV29, Level5, RevisionHistory, UUIDv4,
+    Version, XMLVersion, CMV40_MIN_VERSION, UHD_AR,
 };
 
 mod display;
@@ -20,7 +20,7 @@ mod track;
 #[derive(Debug, Serialize)]
 pub struct DolbyLabsMDF {
     pub xmlns: String,
-    #[serde(rename = "$unflatten=Version")]
+    #[serde(rename = "Version")]
     pub version: Version,
     #[serde(rename = "RevisionHistory")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -52,11 +52,16 @@ impl DolbyLabsMDF {
                     .plugin_node
                     .dv_global_data
                     .mastering_display
-                    .application_type = Some(ApplicationType::All);
+                    .application_type = Some(ApplicationType {
+                    application_type: ApplicationTypeEnum::All,
+                });
 
                 if let Some(ds) = track.plugin_node.dv_global_data.target_displays.as_mut() {
-                    ds.iter_mut()
-                        .for_each(|d| d.application_type = Some(ApplicationType::Home))
+                    ds.iter_mut().for_each(|d| {
+                        d.application_type = Some(ApplicationType {
+                            application_type: ApplicationTypeEnum::Home,
+                        })
+                    })
                 }
             });
         }
@@ -103,15 +108,15 @@ impl IntoCMV29<cmv29::Outputs> for Outputs {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct Output {
-    #[serde(rename = "$unflatten=CompositionName")]
+    #[serde(rename = "CompositionName")]
     pub composition_name: String,
     #[serde(rename = "UniqueID")]
     pub unique_id: UUIDv4,
-    #[serde(rename = "$unflatten=NumberVideoTracks")]
+    #[serde(rename = "NumberVideoTracks")]
     pub number_video_tracks: usize,
-    #[serde(rename = "$unflatten=CanvasAspectRatio")]
+    #[serde(rename = "CanvasAspectRatio")]
     pub canvas_aspect_ratio: f32,
-    #[serde(rename = "$unflatten=ImageAspectRatio")]
+    #[serde(rename = "ImageAspectRatio")]
     pub image_aspect_ratio: f32,
     #[serde(rename = "Video")]
     pub video: Video,

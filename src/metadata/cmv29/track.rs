@@ -3,10 +3,14 @@ use serde::Serialize;
 use crate::cmv29::{AlgorithmVersions, Characteristics, Shot};
 use crate::display::Chromaticity;
 use crate::MDFType::CMV29;
-use crate::{cmv40, ColorSpace, Eotf, IntoCMV29, Level6, MDFType, Primaries, SignalRange, UUIDv4};
+use crate::{
+    cmv40, ColorSpace, Encoding, IntoCMV29, Level6, MDFType, Primaries, SignalRange,
+    SignalRangeEnum, UUIDv4,
+};
 
 #[derive(Debug, Serialize)]
 pub struct Track {
+    #[serde(rename = "@name")]
     pub name: String,
     #[serde(rename = "UniqueID")]
     pub unique_id: UUIDv4,
@@ -26,9 +30,9 @@ pub struct Track {
 
 #[derive(Debug, Serialize)]
 pub struct Rate {
-    #[serde(rename = "$unflatten=n")]
+    #[serde(rename = "n")]
     pub n: usize,
-    #[serde(rename = "$unflatten=d")]
+    #[serde(rename = "d")]
     pub d: usize,
 }
 
@@ -37,22 +41,22 @@ pub struct ColorEncoding {
     #[serde(rename = "Primaries")]
     pub primaries: Primaries,
     // Format: f32,f32
-    #[serde(rename = "$unflatten=WhitePoint")]
+    #[serde(rename = "WhitePoint")]
     pub white_point: MDFType<Chromaticity>,
-    #[serde(rename = "$unflatten=PeakBrightness")]
+    #[serde(rename = "PeakBrightness")]
     pub peak_brightness: usize,
-    #[serde(rename = "$unflatten=MinimumBrightness")]
+    #[serde(rename = "MinimumBrightness")]
     pub minimum_brightness: usize,
-    #[serde(rename = "$unflatten=Encoding")]
-    pub encoding: Eotf,
-    #[serde(rename = "$unflatten=BitDepth")]
+    #[serde(rename = "Encoding")]
+    pub encoding: Encoding,
+    #[serde(rename = "BitDepth")]
     pub bit_depth: usize,
-    #[serde(rename = "$unflatten=ColorSpace")]
+    #[serde(rename = "ColorSpace")]
     pub color_space: ColorSpace,
     // FIXME: use usize?
-    #[serde(rename = "$unflatten=ChromaFormat")]
+    #[serde(rename = "ChromaFormat")]
     pub chroma_format: String,
-    #[serde(rename = "$unflatten=SignalRange")]
+    #[serde(rename = "SignalRange")]
     pub signal_range: SignalRange,
 }
 
@@ -68,7 +72,9 @@ impl From<cmv40::ColorEncoding> for ColorEncoding {
             bit_depth: 16,
             color_space: c.color_space,
             chroma_format: "444".to_string(),
-            signal_range: SignalRange::Computer,
+            signal_range: SignalRange {
+                signal_range: SignalRangeEnum::Computer,
+            },
         }
     }
 }
@@ -97,7 +103,7 @@ impl From<cmv40::TrackPluginNode> for TrackPluginNode {
 #[derive(Debug, Serialize)]
 pub struct TrackDolbyEDR {
     // Format: usize,usize
-    #[serde(rename = "$unflatten=AlgorithmVersions")]
+    #[serde(rename = "AlgorithmVersions")]
     pub algorithm_versions: MDFType<AlgorithmVersions>,
     #[serde(rename = "Characteristics")]
     pub characteristics: Characteristics,

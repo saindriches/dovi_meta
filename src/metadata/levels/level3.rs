@@ -6,9 +6,10 @@ use crate::{ImageCharacter, MDFType};
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct Level3 {
+    #[serde(rename = "@level")]
     pub level: u8,
     // Format: f32 f32 f32
-    #[serde(rename = "$unflatten=L1Offset")]
+    #[serde(rename = "L1Offset")]
     pub l1_offset: MDFType<ImageCharacter>,
 }
 

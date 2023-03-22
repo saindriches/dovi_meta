@@ -3,13 +3,14 @@ use serde::Serialize;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize)]
 pub struct Level11 {
+    #[serde(rename = "@level")]
     pub level: u8,
-    #[serde(rename = "$unflatten=ContentType")]
+    #[serde(rename = "ContentType")]
     pub content_type: u8,
-    #[serde(rename = "$unflatten=IntendedWhitePoint")]
+    #[serde(rename = "IntendedWhitePoint")]
     pub intended_white_point: u8,
     // FIXME: Rename
-    #[serde(rename = "$unflatten=ExtensionProperties")]
+    #[serde(rename = "ExtensionProperties")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub extension_properties: Option<u8>,
 }

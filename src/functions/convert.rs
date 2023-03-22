@@ -227,16 +227,15 @@ impl Converter {
 
         let md = cmv40::DolbyLabsMDF::with_single_output(output)?;
 
-        let mut serializer_buffer = Vec::new();
-        let writer = Writer::new(&mut serializer_buffer);
-        let mut ser = Serializer::new(writer.into_inner());
+        let mut serializer_buffer = String::new();
+        let ser = Serializer::new(&mut serializer_buffer);
 
         if converter.level254.is_none() {
             println!("CM v2.9 RPU found, saving as v2.0.5 XML...");
-            md.into_cmv29().serialize(&mut ser)?;
+            md.into_cmv29().serialize(ser)?;
         } else {
             println!("CM v4.0 RPU found, saving as v{} XML...", md.version);
-            md.serialize(&mut ser)?;
+            md.serialize(ser)?;
         }
 
         let output = if let Some(output) = args.output {
@@ -251,7 +250,7 @@ impl Converter {
             output_buffer,
             "{}{}",
             XML_PREFIX,
-            Self::prettify_xml(String::from_utf8(serializer_buffer)?)
+            Self::prettify_xml(serializer_buffer)
         )?;
 
         Ok(())

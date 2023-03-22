@@ -10,7 +10,7 @@ use itertools::Itertools;
 
 use crate::display::{PREDEFINED_MASTERING_DISPLAYS, PREDEFINED_TARGET_DISPLAYS, RPU_PQ_MAX};
 use crate::metadata::display::primary::Primaries;
-use crate::{display, Eotf};
+use crate::{display, Encoding, EncodingEnum};
 
 #[derive(Debug, Clone)]
 pub struct Characteristics {
@@ -20,7 +20,7 @@ pub struct Characteristics {
     pub primaries: Primaries,
     pub peak_brightness: usize,
     pub minimum_brightness: f32,
-    pub eotf: Eotf,
+    pub encoding: Encoding,
     pub diagonal_size: usize,
 }
 
@@ -32,7 +32,7 @@ impl PartialEq for Characteristics {
             && self.primaries == other.primaries
             && self.peak_brightness == other.peak_brightness
             && self.minimum_brightness.to_bits() == other.minimum_brightness.to_bits()
-            && self.eotf == other.eotf
+            && self.encoding == other.encoding
             && self.diagonal_size == other.diagonal_size
     }
 }
@@ -47,7 +47,7 @@ impl Hash for Characteristics {
         self.primaries.hash(state);
         self.peak_brightness.hash(state);
         self.minimum_brightness.to_bits().hash(state);
-        self.eotf.hash(state);
+        self.encoding.hash(state);
         self.diagonal_size.hash(state);
     }
 }
@@ -63,14 +63,14 @@ impl Characteristics {
             _ => "Custom",
         };
 
-        let eotf = match self.eotf {
-            Eotf::Pq => "ST.2084",
-            Eotf::Linear => "Linear",
-            Eotf::GammaBT1886 => "BT.1886",
-            Eotf::GammaDCI => "Gamma2.6",
-            Eotf::Gamma22 => "Gamma2.2",
-            Eotf::Gamma24 => "Gamma2.4",
-            Eotf::Hlg => "HLG",
+        let eotf = match self.encoding.encoding {
+            EncodingEnum::Pq => "ST.2084",
+            EncodingEnum::Linear => "Linear",
+            EncodingEnum::GammaBT1886 => "BT.1886",
+            EncodingEnum::GammaDCI => "Gamma2.6",
+            EncodingEnum::Gamma22 => "Gamma2.2",
+            EncodingEnum::Gamma24 => "Gamma2.4",
+            EncodingEnum::Hlg => "HLG",
         };
 
         self.name = format!(
@@ -133,7 +133,6 @@ impl Characteristics {
                 primaries: primary,
                 peak_brightness: max_luminance,
                 minimum_brightness: 0.0,
-                eotf: Eotf::Pq,
                 ..Default::default()
             };
 
@@ -226,7 +225,9 @@ impl Characteristics {
 
                 // BT.709 BT.1886
                 if primary_index == 1 {
-                    source.eotf = Eotf::GammaBT1886;
+                    source.encoding = Encoding {
+                        encoding: EncodingEnum::GammaBT1886,
+                    };
                     source.peak_brightness = 100;
                     // Default source (4000-nit) min_brightness is 0.005-nit
                 }
@@ -266,7 +267,9 @@ impl From<[usize; 6]> for Characteristics {
             peak_brightness: input[2],
             minimum_brightness: Self::min_f32_from_rpu_pq_u12(input[3] as u16),
             // :(
-            eotf: unsafe { transmute::<usize, Eotf>(input[4]) },
+            encoding: Encoding {
+                encoding: unsafe { transmute::<usize, EncodingEnum>(input[4]) },
+            },
             // TODO
             diagonal_size: 42,
         };
@@ -298,7 +301,9 @@ impl From<&ExtMetadataBlockLevel10> for Characteristics {
             },
             peak_brightness: Self::max_u16_from_rpu_pq_u12(block.target_max_pq),
             minimum_brightness: Self::min_f32_from_rpu_pq_u12(block.target_min_pq),
-            eotf: Eotf::Pq,
+            encoding: Encoding {
+                encoding: EncodingEnum::Pq,
+            },
             diagonal_size: 42,
             ..Default::default()
         };

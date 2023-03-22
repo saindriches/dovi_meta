@@ -3,7 +3,7 @@ use std::fmt::{Debug, Display, Formatter};
 
 use chrono::{SecondsFormat, Utc};
 use itertools::Itertools;
-use serde::{Deserialize, Serialize, Serializer};
+use serde::{Serialize, Serializer};
 // use serde_aux::prelude::serde_introspect;
 use uuid::Uuid;
 
@@ -141,56 +141,81 @@ impl<T> IntoCMV29<Self> for MDFType<T> {
         }
     }
 }
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize)]
+pub struct Encoding {
+    #[serde(rename = "$text")]
+    pub encoding: EncodingEnum,
+}
 
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize)]
 #[repr(usize)]
-pub enum Eotf {
-    #[serde(rename = "$primitive=pq")]
+// FIXME
+#[allow(dead_code)]
+pub enum EncodingEnum {
+    #[serde(rename = "pq")]
     #[default]
     Pq,
-    #[serde(rename = "$primitive=linear")]
+    #[serde(rename = "linear")]
     Linear,
-    #[serde(rename = "$primitive=gamma_bt1886")]
+    #[serde(rename = "gamma_bt1886")]
     GammaBT1886,
-    #[serde(rename = "$primitive=gamma_dci")]
+    #[serde(rename = "gamma_dci")]
     GammaDCI,
-    #[serde(rename = "$primitive=gamma_22")]
+    #[serde(rename = "gamma_22")]
     Gamma22,
-    #[serde(rename = "$primitive=gamma_24")]
+    #[serde(rename = "gamma_24")]
     Gamma24,
-    #[serde(rename = "$primitive=hlg")]
+    #[serde(rename = "hlg")]
     Hlg,
 }
 
 #[derive(Debug, Clone, Serialize)]
-pub enum ColorSpace {
-    #[serde(rename = "$primitive=rgb")]
+pub struct ColorSpace {
+    #[serde(rename = "$text")]
+    pub color_space: ColorSpaceEnum,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub enum ColorSpaceEnum {
+    #[serde(rename = "rgb")]
     Rgb,
-    // #[serde(rename = "$primitive=xyz")]
+    // #[serde(rename = "xyz")]
     // Xyz,
-    // #[serde(rename = "$primitive=ycbcr_bt709")]
+    // #[serde(rename = "ycbcr_bt709")]
     // YCbCrBT709,
-    // #[serde(rename = "$primitive=ycbcr_bt2020")]
+    // #[serde(rename = "ycbcr_bt2020")]
     // YCbCrBT2020,
-    // #[serde(rename = "$primitive=ycbcr_native")]
+    // #[serde(rename = "ycbcr_native")]
     // YCbCrNative,
 }
 
 #[derive(Debug, Clone, Copy, Serialize)]
-pub enum ApplicationType {
-    #[serde(rename = "$primitive=ALL")]
+pub struct ApplicationType {
+    #[serde(rename = "$text")]
+    pub application_type: ApplicationTypeEnum,
+}
+
+#[derive(Debug, Clone, Copy, Serialize)]
+pub enum ApplicationTypeEnum {
+    #[serde(rename = "ALL")]
     All,
-    #[serde(rename = "$primitive=HOME")]
+    #[serde(rename = "HOME")]
     Home,
-    // #[serde(rename = "$primitive=CINEMA")]
+    // #[serde(rename = "CINEMA")]
     // Cinema,
 }
 
 #[derive(Debug, Clone, Serialize)]
-pub enum SignalRange {
-    #[serde(rename = "$primitive=computer")]
+pub struct SignalRange {
+    #[serde(rename = "$text")]
+    pub signal_range: SignalRangeEnum,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub enum SignalRangeEnum {
+    #[serde(rename = "computer")]
     Computer,
-    // #[serde(rename = "$primitive=video")]
+    // #[serde(rename = "video")]
     // Video,
 }
 
@@ -285,13 +310,13 @@ impl RevisionHistory {
 pub struct Revision {
     #[serde(rename = "DateTime")]
     pub date_time: DateTime,
-    #[serde(rename = "$unflatten=Author")]
+    #[serde(rename = "Author")]
     pub author: String,
-    #[serde(rename = "$unflatten=Software")]
+    #[serde(rename = "Software")]
     pub software: String,
-    #[serde(rename = "$unflatten=SoftwareVersion")]
+    #[serde(rename = "SoftwareVersion")]
     pub software_version: String,
-    #[serde(rename = "$unflatten=Comment")]
+    #[serde(rename = "Comment")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub comment: Option<String>,
 }
@@ -320,11 +345,11 @@ impl DateTime {
 // Format: f32,f32 in CMv2.9, f32 f32 in CMv4.0
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct Primaries {
-    #[serde(rename = "$unflatten=Red")]
+    #[serde(rename = "Red")]
     pub red: MDFType<Chromaticity>,
-    #[serde(rename = "$unflatten=Green")]
+    #[serde(rename = "Green")]
     pub green: MDFType<Chromaticity>,
-    #[serde(rename = "$unflatten=Blue")]
+    #[serde(rename = "Blue")]
     pub blue: MDFType<Chromaticity>,
 }
 

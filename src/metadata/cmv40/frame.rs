@@ -5,7 +5,7 @@ use crate::{cmv29, IntoCMV29, UUIDv4};
 
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct Frame {
-    #[serde(rename = "$unflatten=EditOffset")]
+    #[serde(rename = "EditOffset")]
     pub edit_offset: usize,
     #[serde(rename = "DVDynamicData")]
     pub dv_dynamic_data: DVDynamicData,

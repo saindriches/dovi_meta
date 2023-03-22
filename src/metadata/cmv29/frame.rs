@@ -7,7 +7,7 @@ use crate::UUIDv4;
 pub struct Frame {
     #[serde(rename = "UniqueID")]
     pub unique_id: UUIDv4,
-    #[serde(rename = "$unflatten=EditOffset")]
+    #[serde(rename = "EditOffset")]
     pub edit_offset: usize,
     #[serde(rename = "PluginNode")]
     pub plugin_node: ShotPluginNode,

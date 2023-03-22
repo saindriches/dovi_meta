@@ -15,10 +15,11 @@ mod track;
 
 #[derive(Debug, Serialize)]
 pub struct DolbyLabsMDF {
+    #[serde(rename = "@version")]
     pub version: Version,
-    #[serde(rename = "xmlns:xsd")]
+    #[serde(rename = "@xmlns:xsd")]
     pub xmlns_xsd: String,
-    #[serde(rename = "xmlns:xsi")]
+    #[serde(rename = "@xmlns:xsi")]
     pub xmlns_xsi: String,
     #[serde(rename = "SourceList")]
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -41,13 +42,13 @@ pub struct SourceList {
 // TODO: Some other fields are available here
 #[derive(Debug, Serialize)]
 pub struct Source {
-    #[serde(rename = "type")]
+    #[serde(rename = "@type")]
     pub type_: String,
     #[serde(rename = "UniqueID")]
     pub unique_id: UUIDv4,
-    #[serde(rename = "$unflatten=In")]
+    #[serde(rename = "In")]
     pub in_: usize,
-    #[serde(rename = "$unflatten=Duration")]
+    #[serde(rename = "Duration")]
     pub duration: usize,
 }
 
@@ -100,16 +101,17 @@ impl Outputs {
 
 #[derive(Debug, Serialize)]
 pub struct Output {
+    #[serde(rename = "@name")]
     pub name: String,
     #[serde(rename = "UniqueID")]
     pub unique_id: UUIDv4,
-    #[serde(rename = "$unflatten=NumberVideoTracks")]
+    #[serde(rename = "NumberVideoTracks")]
     pub number_video_tracks: usize,
-    #[serde(rename = "$unflatten=NumberAudioTracks")]
+    #[serde(rename = "NumberAudioTracks")]
     pub number_audio_tracks: usize,
-    #[serde(rename = "$unflatten=CanvasAspectRatio")]
+    #[serde(rename = "CanvasAspectRatio")]
     pub canvas_aspect_ratio: f32,
-    #[serde(rename = "$unflatten=ImageAspectRatio")]
+    #[serde(rename = "ImageAspectRatio")]
     pub image_aspect_ratio: f32,
     #[serde(rename = "Video")]
     pub video: Video,

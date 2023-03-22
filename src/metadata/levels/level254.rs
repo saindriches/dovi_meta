@@ -3,13 +3,14 @@ use serde::Serialize;
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Level254 {
+    #[serde(rename = "@level")]
     pub level: u8,
-    #[serde(rename = "$unflatten=DMMode")]
+    #[serde(rename = "DMMode")]
     pub dm_mode: u8,
-    #[serde(rename = "$unflatten=DMVersion")]
+    #[serde(rename = "DMVersion")]
     pub dm_version: u8,
     // Format: u8 u8
-    #[serde(rename = "$unflatten=CMVersion")]
+    #[serde(rename = "CMVersion")]
     pub cm_version: String,
 }
 
