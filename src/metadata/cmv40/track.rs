@@ -142,17 +142,11 @@ impl From<&VdrDmData> for TrackPluginNode {
 
         let mastering_display = display::Characteristics::get_source_or_default(vdr).into();
 
-        let target_displays = display::Characteristics::get_targets(vdr).map(|d| {
-            d.iter()
-                .map(|c| Characteristics::from(c.clone()))
-                .collect::<Vec<_>>()
-        });
-
         Self {
             dv_global_data: DVGlobalData {
                 level: 0,
                 mastering_display,
-                target_displays,
+                target_displays: None,
             },
             level11,
             level254,

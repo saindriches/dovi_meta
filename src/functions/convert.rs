@@ -10,12 +10,14 @@ use quick_xml::se::Serializer;
 use quick_xml::{Reader, Writer};
 use serde::Serialize;
 
-use crate::cmv40::{EditRate, Output, Shot, Track};
+use crate::cmv40::{Characteristics, EditRate, Output, Shot, Track};
 use crate::commands::convert::ConvertArgs;
 use crate::metadata::levels::Level11;
 use crate::metadata::levels::Level5;
 use crate::MDFType::{CMV29, CMV40};
-use crate::{cmv40, IntoCMV29, Level254, Level6, UHD_AR, UHD_HEIGHT, UHD_WIDTH, XML_PREFIX};
+use crate::{
+    cmv40, display, IntoCMV29, Level254, Level6, UHD_AR, UHD_HEIGHT, UHD_WIDTH, XML_PREFIX,
+};
 
 #[derive(Debug, Default)]
 pub struct Converter {
@@ -63,6 +65,8 @@ impl Converter {
         edit_rate.validate()?;
 
         println!("Converting RPU file...");
+
+        let mut targets_map = HashMap::new();
 
         // Parse shot-based and frame-based metadata
         for rpu in rpus {
@@ -126,6 +130,13 @@ impl Converter {
                             }
                         }
 
+                        if let Some(d) = display::Characteristics::get_targets(vdr) {
+                            d.iter().for_each(|c| {
+                                let target = Characteristics::from(c.clone());
+                                targets_map.entry(target.id).or_insert(target);
+                            })
+                        }
+
                         count -= 1;
                     }
 
@@ -165,6 +176,12 @@ impl Converter {
 
         if let Some(ref mut shots) = converter.shots {
             shots.push(converter.last_shot.clone());
+
+            let mut targets = targets_map.values().cloned().collect::<Vec<_>>();
+            if !targets.is_empty() {
+                targets.sort_by_key(|c| c.id);
+                converter.track.plugin_node.dv_global_data.target_displays = Some(targets);
+            }
 
             // FIXME: THE IMPLEMENTATION FOR LEVEL5 IS WRONG !!!
             let mut level5_map = HashMap::new();
