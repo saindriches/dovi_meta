@@ -177,18 +177,17 @@ impl Characteristics {
             }
         });
 
-        let mut targets = targets
+        let targets = targets
             .into_iter()
             .unique()
             .sorted_by_key(|c| c.id)
             .collect::<Vec<_>>();
 
         if targets.is_empty() {
-            // 100-nit, BT.709
-            targets.push(Self::default())
+            None
+        } else {
+            Some(targets)
         }
-
-        Some(targets)
     }
 
     pub fn default_source() -> Self {
