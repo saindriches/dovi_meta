@@ -20,7 +20,6 @@ pub struct ConvertArgs {
         long,
         default_value = "3840x2160",
         use_value_delimiter = true,
-        // FIXME: Clap bug? values with custom delimiter is parsed as one value
         value_delimiter = 'x',
         num_args(1..=2),
         help = "Set the canvas size"
@@ -56,7 +55,11 @@ pub struct ConvertArgs {
     )]
     pub skip: usize,
 
-    #[clap(short = 'n', long, help = "Set the number of frames to be parsed")]
+    #[clap(
+        short = 'n',
+        long,
+        help = "Set the number of frames to be parsed explicitly"
+    )]
     pub count: Option<usize>,
 
     #[clap(

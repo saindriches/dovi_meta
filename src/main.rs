@@ -2,10 +2,10 @@ use anyhow::Result;
 use clap::Parser;
 
 use crate::commands::Command;
-use crate::functions::Converter;
+use crate::functions::{Converter, EdlConverter};
 use crate::levels::*;
 use crate::metadata::*;
-use crate::Command::Convert;
+use crate::Command::{Convert, Edl};
 
 mod commands;
 mod functions;
@@ -24,5 +24,6 @@ fn main() -> Result<()> {
 
     match opt.cmd {
         Convert(args) => Converter::convert(args),
+        Edl(args) => EdlConverter::convert(args),
     }
 }

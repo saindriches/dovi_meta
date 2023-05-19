@@ -15,7 +15,7 @@ uuid = { version = "1.1.2", features = ["v4"] }
 
 dolby_vision = "3.1.2"
 # TODO: Use timecode as unique id, as an option.
-#vtc = "0.1.9"
+vtc = "0.1.12"
 chrono = "0.4.24"
 serde = { version = "1.0.158", features = ["derive"] }
 serde-aux = "4.0.0"

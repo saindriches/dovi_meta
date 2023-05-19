@@ -1,8 +1,10 @@
 use std::array;
+use std::fmt::{Display, Formatter};
 
 use anyhow::{ensure, Result};
 use dolby_vision::rpu::extension_metadata::blocks::ExtMetadataBlock;
 use dolby_vision::rpu::vdr_dm_data::VdrDmData;
+use itertools::Itertools;
 use serde::Serialize;
 
 use crate::cmv29::Rate;
@@ -114,6 +116,12 @@ impl IntoCMV29<Rate> for EditRate {
             n: self.0[0],
             d: self.0[1],
         }
+    }
+}
+
+impl Display for EditRate {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.into_iter().join("/"))
     }
 }
 

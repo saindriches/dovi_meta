@@ -29,7 +29,7 @@ dovi_meta <SUBCOMMAND> --help
 ## All options
 - `--help`, `--version`
 ## All subcommands
-Currently, the only available subcommand is **`convert`**
+Currently, the available subcommand is **`convert`** and **`edl`**.
 
 **More information and detailed examples for the subcommands below.**
 
@@ -41,19 +41,19 @@ Currently, the only available subcommand is **`convert`**
     - The output version is determined by input automatically.
   
   **Arguments**
-  * `INPUT`                   Set the input RPU file to use.
+  * `INPUT`                   Set the input RPU file to use
     - No limitation for RPU file extension.
-  * `OUTPUT`                  Set the output XML file location.
+  * `OUTPUT`                  Set the output XML file location
     - When `OUTPUT` is not set, the output file is `metadata.xml` at current path.
   
   **Options**
-  * `-s`, `--size`            Set the canvas size. Use `x` as delimiter.
+  * `-s`, `--size`            Set the canvas size. Use `x` as delimiter
     - Default value is `3840x2160`
   * `-r`, `--rate`            Set the frame rate. Format: integer `NUM` or `NUM/DENOM`
     - Default value is `24000/1001`
   * `-t`, `--skip`            Set the number of frames to be skipped from start
     - Default value is `0`
-  * `-n`, `--count`           Set the number of frames to be parsed
+  * `-n`, `--count`           Set the number of frames to be parsed explicitly
 
   **Flags**
   * `-6`, `--use-level6`      Use MaxCLL and MaxFALL from RPU, if possible
@@ -70,6 +70,30 @@ Currently, the only available subcommand is **`convert`**
 
   The default color space of mastering display and target displays (except the anchor target) is **P3 D65** for CM v2.9 XML, also for CM v4.0 XML when it can't be determined by input.
 
+* ### **edl**
+  Convert a binary RPU to EDL (Edit Decision List).
+  * Currently, the per-frame metadata in RPU is not parsed to transition.
+
+  **Arguments**
+  * `INPUT`                   Set the input RPU file to use
+    - No limitation for RPU file extension.
+  * `OUTPUT`                  Set the output XML file location
+    - When `OUTPUT` is not set, the output file is `metadata.edl` at current path.
+  * `CLIP_NAME`               Set the clip name in EDL
+    - If there are too many cuts to be saved in a single file,
+      multiple files will be saved with a suffix added to the file name.
+
+  **Options**
+  * `-r`, `--rate`            Set the frame rate. Format: integer `NUM` or `NUM/DENOM`
+    - Default value is `24000/1001`
+  * `-s`, `--start-timecode`  Set the starting timecode in timeline. Format: `HH:MM:SS:FF` or integer `FRAMES` offset
+    - Default value is `01:00:00:00`
+  * `-t`, `--skip`            Set the number of frames to be skipped from start
+    - Default value is `0`
+  * `-n`, `--count`           Set the number of frames to be parsed explicitly
+
+  **Flags**
+  * `-f`, `--force`           Force output even if per-frame RPU is detected
 
 ## **Notes**
 The current build only support RPU as input. To extract RPU from an HEVC file, see [dovi_tool](https://github.com/quietvoid/dovi_tool) for more info.
