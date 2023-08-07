@@ -90,7 +90,7 @@ impl Characteristics {
                 let n = display::pq2l(u as f32 / RPU_PQ_MAX).round();
                 // smooth large values
                 if n > 500.0 {
-                    (n / 50.0) as usize * 50
+                    (n / 50.0 + 1.0) as usize * 50
                 } else {
                     n as usize
                 }
