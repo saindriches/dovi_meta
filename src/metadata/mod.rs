@@ -327,7 +327,9 @@ impl Revision {
             date_time: DateTime::new(),
             author: env!("CARGO_PKG_AUTHORS").to_string(),
             software: env!("CARGO_PKG_NAME").to_string(),
-            software_version: env!("CARGO_PKG_VERSION").to_string(),
+            software_version: option_env!("VERGEN_GIT_DESCRIBE")
+                .unwrap_or(env!("CARGO_PKG_VERSION"))
+                .to_string(),
             comment: None,
         }
     }

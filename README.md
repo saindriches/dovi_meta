@@ -9,7 +9,7 @@
 ## **Building**
 ### **Toolchain**
 
-The minimum Rust version to build **`dovi_meta`** is 1.64.0.
+The minimum Rust version to build **`dovi_meta`** is 1.67.0.
 
 ### **Release binary**
 To build release binary in `target/release/dovi_meta` run:
