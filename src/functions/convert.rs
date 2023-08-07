@@ -4,7 +4,6 @@ use std::io::{BufWriter, Write};
 
 use anyhow::{bail, ensure, Result};
 use dolby_vision::rpu::utils::parse_rpu_file;
-use itertools::{Itertools, MinMaxResult};
 use quick_xml::events::Event;
 use quick_xml::se::Serializer;
 use quick_xml::{Reader, Writer};
@@ -15,9 +14,7 @@ use crate::commands::convert::ConvertArgs;
 use crate::metadata::levels::Level11;
 use crate::metadata::levels::Level5;
 use crate::MDFType::{CMV29, CMV40};
-use crate::{
-    cmv40, display, IntoCMV29, Level254, Level6, UHD_AR, UHD_HEIGHT, UHD_WIDTH, XML_PREFIX,
-};
+use crate::{cmv40, display, IntoCMV29, Level254, Level6, XML_PREFIX};
 
 #[derive(Debug, Default)]
 pub struct Converter {
@@ -195,7 +192,9 @@ impl Converter {
                 *level11_map.entry(&shot.plugin_node.level11).or_insert(0) += 1_usize;
             });
 
-            converter.level5 = Some(Self::get_global_ar(level5_map, canvas));
+            // converter.level5 = Some(Self::get_global_ar(level5_map, canvas));
+            converter.level5 =
+                Self::get_common(level5_map).or_else(|| Some(Level5::with_canvas(None, canvas)));
 
             // Choose the most common level11 as track-level metadata,
             converter.level11 = Self::get_common(level11_map);
@@ -257,57 +256,13 @@ impl Converter {
     }
 
     /// None: Standard UHD
-    fn parse_canvas_ar(vec: Vec<usize>) -> Result<Option<(usize, usize)>> {
+    fn parse_canvas_ar(vec: Vec<usize>) -> Result<(usize, usize)> {
         ensure!(
             vec.len() == 2,
             "Invalid canvas size. Use 'x' as delimiter, like 3840x2160"
         );
         ensure!(vec[0] != 0 && vec[1] != 0, "Invalid canvas size.");
-        let canvas = (vec[0], vec[1]);
-        let canvas = if canvas == (UHD_WIDTH, UHD_HEIGHT) {
-            None
-        } else {
-            Some(canvas)
-        };
-
-        // stdout().flush().ok();
-
-        Ok(canvas)
-    }
-
-    fn get_global_ar(
-        map: HashMap<&Option<Level5>, usize>,
-        canvas: Option<(usize, usize)>,
-    ) -> Level5 {
-        let canvas_ar = match canvas {
-            Some((width, height)) => width as f32 / height as f32,
-            None => UHD_AR,
-        };
-
-        let minmax = map
-            .into_iter()
-            .filter(|(value, _)| value.is_some())
-            .map(|(value, _)| value.clone().unwrap())
-            .minmax();
-
-        match minmax {
-            MinMaxResult::NoElements => Level5::from(canvas_ar),
-            MinMaxResult::OneElement(b) => b,
-            MinMaxResult::MinMax(b_min, b_max) => {
-                let b_canvas = Level5::from(canvas_ar);
-                // if b_min > b_canvas {
-                //     // all letterbox types are up/bottom
-                //     b_min
-                // } else if b_max < b_canvas {
-                //     // all letterbox types are left/right
-                //     b_max
-                // } else {
-                //     // Mixed type, or no letterbox
-                //     b_canvas
-                // }
-                b_canvas.clamp(b_min, b_max)
-            }
-        }
+        Ok((vec[0], vec[1]))
     }
 
     fn get_common<K, V>(map: HashMap<&Option<K>, V>) -> Option<K>

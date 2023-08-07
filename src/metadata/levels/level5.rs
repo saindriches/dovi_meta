@@ -2,8 +2,9 @@ use dolby_vision::rpu::extension_metadata::blocks::ExtMetadataBlockLevel5;
 use serde::Serialize;
 use std::cmp::Ordering;
 
+use crate::metadata::levels::UHD_CANVAS;
 use crate::MDFType::CMV40;
-use crate::{IntoCMV29, MDFType, UHD_HEIGHT, UHD_WIDTH};
+use crate::{IntoCMV29, MDFType};
 
 use super::AspectRatio;
 
@@ -26,7 +27,7 @@ impl Level5 {
 // For convenience, it assumes the canvas is standard UHD
 impl From<&ExtMetadataBlockLevel5> for Level5 {
     fn from(block: &ExtMetadataBlockLevel5) -> Self {
-        Self::with_canvas(block, (UHD_WIDTH, UHD_HEIGHT))
+        Self::with_canvas(Some(block), UHD_CANVAS)
     }
 }
 
@@ -49,18 +50,22 @@ impl IntoCMV29<Self> for Level5 {
 }
 
 impl Level5 {
-    pub fn with_canvas(block: &ExtMetadataBlockLevel5, canvas: (usize, usize)) -> Self {
+    pub fn with_canvas(block: Option<&ExtMetadataBlockLevel5>, canvas: (usize, usize)) -> Self {
         let (width, height) = canvas;
         let canvas_ar = width as f32 / height as f32;
 
-        let horizontal_crop = block.active_area_left_offset + block.active_area_right_offset;
-        let vertical_crop = block.active_area_top_offset + block.active_area_bottom_offset;
+        let image_ar = if let Some(block) = block {
+            let horizontal_crop = block.active_area_left_offset + block.active_area_right_offset;
+            let vertical_crop = block.active_area_top_offset + block.active_area_bottom_offset;
 
-        let image_ar = if horizontal_crop > 0 {
-            (width as f32 - horizontal_crop as f32) / height as f32
+            if horizontal_crop > 0 {
+                (width as f32 - horizontal_crop as f32) / height as f32
+            } else {
+                // Ok because only one of the crop types will be 0
+                width as f32 / (height as f32 - vertical_crop as f32)
+            }
         } else {
-            // Ok because only one of the crop types will be 0
-            width as f32 / (height as f32 - vertical_crop as f32)
+            canvas_ar
         };
 
         Self {

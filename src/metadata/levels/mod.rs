@@ -33,6 +33,7 @@ pub const RPU_U8_BIAS: f32 = 128.0;
 pub const RPU_U12_BIAS: f32 = 2048.0;
 pub const UHD_WIDTH: usize = 3840;
 pub const UHD_HEIGHT: usize = 2160;
+pub const UHD_CANVAS: (usize, usize) = (UHD_WIDTH, UHD_HEIGHT);
 pub const UHD_AR: f32 = 16.0 / 9.0;
 
 pub fn f32_from_rpu_u12_with_bias(u: u16) -> f32 {

@@ -37,7 +37,7 @@ impl Shot {
         }
     }
 
-    pub fn with_canvas(vdr: &VdrDmData, canvas: Option<(usize, usize)>) -> Self {
+    pub fn with_canvas(vdr: &VdrDmData, canvas: (usize, usize)) -> Self {
         Self {
             unique_id: UUIDv4::new(),
             record: Default::default(),
@@ -67,7 +67,7 @@ impl Shot {
 
 impl From<&VdrDmData> for Shot {
     fn from(vdr: &VdrDmData) -> Self {
-        Self::with_canvas(vdr, None)
+        Self::with_canvas(vdr, UHD_CANVAS)
     }
 }
 
@@ -94,7 +94,7 @@ pub struct ShotPluginNode {
 }
 
 impl ShotPluginNode {
-    fn with_canvas(vdr: &VdrDmData, canvas: Option<(usize, usize)>) -> Self {
+    fn with_canvas(vdr: &VdrDmData, canvas: (usize, usize)) -> Self {
         let level11 = vdr.get_block(11).and_then(|b| match b {
             ExtMetadataBlock::Level11(b) => Some(Level11::from(b)),
             _ => None,
@@ -109,7 +109,7 @@ impl ShotPluginNode {
 
 impl From<&VdrDmData> for ShotPluginNode {
     fn from(vdr: &VdrDmData) -> Self {
-        Self::with_canvas(vdr, None)
+        Self::with_canvas(vdr, UHD_CANVAS)
     }
 }
 
@@ -135,7 +135,7 @@ pub struct DVDynamicData {
 }
 
 impl DVDynamicData {
-    pub fn with_canvas(vdr: &VdrDmData, canvas: Option<(usize, usize)>) -> Self {
+    pub fn with_canvas(vdr: &VdrDmData, canvas: (usize, usize)) -> Self {
         let level1 = if let Some(ExtMetadataBlock::Level1(block)) = vdr.get_block(1) {
             Level1::from(block)
         } else {
@@ -165,13 +165,14 @@ impl DVDynamicData {
             _ => None,
         });
 
-        let level5 = vdr.get_block(5).and_then(|b| match b {
-            ExtMetadataBlock::Level5(b) => match canvas {
-                Some(canvas) => Some(Level5::with_canvas(b, canvas)),
-                None => Some(Level5::from(b)),
-            },
-            _ => None,
-        });
+        let level5 = {
+            let b = vdr.get_block(5).and_then(|b| match b {
+                ExtMetadataBlock::Level5(b) => Some(b),
+                _ => None,
+            });
+
+            Some(Level5::with_canvas(b, canvas))
+        };
 
         let level8 = vdr
             .level_blocks_iter(8)
@@ -194,7 +195,7 @@ impl DVDynamicData {
 
 impl From<&VdrDmData> for DVDynamicData {
     fn from(vdr: &VdrDmData) -> Self {
-        Self::with_canvas(vdr, None)
+        Self::with_canvas(vdr, UHD_CANVAS)
     }
 }
 
