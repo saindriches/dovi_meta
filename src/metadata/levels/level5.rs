@@ -12,7 +12,7 @@ pub struct Level5 {
     #[serde(rename = "@level")]
     pub level: u8,
     // Format: f32 f32
-    #[serde(rename = "AspectRatio")]
+    #[serde(rename = "AspectRatios")]
     pub aspect_ratio: MDFType<AspectRatio>,
 }
 
