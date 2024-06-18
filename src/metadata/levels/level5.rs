@@ -77,9 +77,7 @@ impl Level5 {
 
 impl PartialOrd<Self> for Level5 {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-        self.aspect_ratio
-            .into_inner()
-            .partial_cmp(&other.aspect_ratio.into_inner())
+        Some(self.cmp(other))
     }
 }
 

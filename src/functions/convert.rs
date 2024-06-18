@@ -110,7 +110,9 @@ impl Converter {
                                     converter.track.level6 = Some(Level6::default());
                                 }
 
-                                converter.level254 = converter.track.plugin_node.level254.clone();
+                                converter
+                                    .level254
+                                    .clone_from(&converter.track.plugin_node.level254);
 
                                 converter.track.edit_rate = if converter.level254.is_none() {
                                     CMV29(edit_rate)
@@ -281,7 +283,7 @@ impl Converter {
         let mut buf = Vec::new();
 
         let mut reader = Reader::from_str(&xml);
-        reader.trim_text(true);
+        reader.config_mut().trim_text(true);
 
         let mut writer = Writer::new_with_indent(Vec::new(), b' ', 2);
 

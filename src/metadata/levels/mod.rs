@@ -147,6 +147,7 @@ impl PartialEq for AspectRatio {
     }
 }
 
+#[allow(clippy::non_canonical_partial_ord_impl)]
 impl PartialOrd for AspectRatio {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         let self_ar = self.0[1] / self.0[0];
