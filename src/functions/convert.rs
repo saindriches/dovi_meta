@@ -203,13 +203,17 @@ impl Converter {
 
             // and remove them in shot-level.
             shots.iter_mut().for_each(|shot| {
-                if shot.plugin_node.dv_dynamic_data.level5 == converter.level5 {
+                let shot_level5 = shot.plugin_node.dv_dynamic_data.level5.clone();
+
+                if shot_level5 == converter.level5 {
                     shot.plugin_node.dv_dynamic_data.level5 = None;
                 };
 
                 if let Some(ref mut frames) = shot.frames {
                     frames.iter_mut().for_each(|frame| {
-                        if frame.dv_dynamic_data.level5 == converter.level5 {
+                        let frame_level5 = frame.dv_dynamic_data.level5.clone();
+
+                        if frame_level5 == converter.level5 || frame_level5 == shot_level5 {
                             frame.dv_dynamic_data.level5 = None;
                         }
                     })
