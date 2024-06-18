@@ -52,13 +52,14 @@ pub const PREDEFINED_MASTERING_DISPLAYS: &[[usize; 6]] = &[
 #[rustfmt::skip]
 pub const PREDEFINED_TARGET_DISPLAYS: &[[usize; 6]] = &[
     [   1, 1,  100, 62, 2, 0],
+    [  24, 0,  300,  0, 0, 0],
+    [  25, 2,  300,  0, 0, 0],
     [  27, 0,  600,  0, 0, 0],
     [  28, 2,  600,  0, 0, 0],
     [  37, 0, 2000,  0, 0, 0],
     [  38, 2, 2000,  0, 0, 0],
     [  48, 0, 1000,  0, 0, 0],
     [  49, 2, 1000,  0, 0, 0],
-    // [9003, 1,  600,  7, 2, 0], // BETA
 ];
 
 // pub const CMV29_TARGET_DISPLAYS_LIST: &[u8] = &[1, 27, 28, 37, 38, 48, 49];
