@@ -37,10 +37,14 @@ pub const UHD_CANVAS: (usize, usize) = (UHD_WIDTH, UHD_HEIGHT);
 pub const UHD_AR: f32 = 16.0 / 9.0;
 
 pub fn f32_from_rpu_u12_with_bias(u: u16) -> f32 {
+    let u = if u == 4095 { 4096 } else { u };
+
     (u as f32 - RPU_U12_BIAS) / RPU_U12_BIAS
 }
 
 pub fn f32_from_rpu_u8_with_bias(u: u8) -> f32 {
+    let u = if u == 255 { 256 } else { u as u16 };
+
     (u as f32 - RPU_U8_BIAS) / RPU_U8_BIAS
 }
 
@@ -57,8 +61,8 @@ impl TrimSixField {
         let lift = 2.0 * offset / (gain + 2.0);
         let gamma = (4.0 / (power + 2.0) - 2.0).min(1.0);
 
-        self.0[0] = lift;
-        self.0[1] = gain;
+        self.0[0] = lift.clamp(-1.0, 1.0);
+        self.0[1] = gain.clamp(-1.0, 1.0);
         self.0[2] = gamma;
     }
 }
@@ -169,5 +173,24 @@ impl Eq for AspectRatio {}
 impl Hash for AspectRatio {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.0.iter().for_each(|f| f.to_bits().hash(state))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_sop_to_lgg() {
+        let mut trim = TrimSixField([
+            f32_from_rpu_u12_with_bias(4095),
+            f32_from_rpu_u12_with_bias(0),
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+        ]);
+        trim.sop_to_lgg();
+
+        assert_eq!(trim.0, [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0]);
     }
 }
