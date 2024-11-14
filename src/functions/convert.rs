@@ -38,6 +38,24 @@ impl Converter {
         };
 
         ensure!(args.count != Some(0), "Invalid specified frame count.");
+        ensure!(
+            args.skip < args.count.unwrap_or(usize::MAX),
+            "Invalid skip count."
+        );
+
+        ensure!(
+            args.size.len() == 2,
+            "Invalid canvas size. Use 'x' as delimiter, like 3840x2160"
+        );
+        ensure!(
+            args.size[0] != 0 && args.size[1] != 0,
+            "Invalid canvas size."
+        );
+
+        ensure!(
+            args.rate.len() <= 2,
+            "Invalid frame rate. Use '/' as delimiter if needed, like 24 or 24000/1001"
+        );
 
         let canvas = Converter::parse_canvas_ar(args.size)?;
 

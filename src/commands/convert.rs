@@ -19,9 +19,7 @@ pub struct ConvertArgs {
         short = 's',
         long,
         default_value = "3840x2160",
-        use_value_delimiter = true,
         value_delimiter = 'x',
-        num_args(1..=2),
         help = "Set the canvas size"
     )]
     pub size: Vec<usize>,
@@ -30,9 +28,7 @@ pub struct ConvertArgs {
         short = 'r',
         long,
         default_value = "24000/1001",
-        use_value_delimiter = true,
         value_delimiter = '/',
-        num_args(1..=2),
         help = "Set the frame rate. Format: integer NUM or NUM/DENOM"
     )]
     pub rate: Vec<usize>,

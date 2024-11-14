@@ -25,6 +25,11 @@ impl EdlConverter {
 
         ensure!(args.count != Some(0), "Invalid specified frame count.");
 
+        ensure!(
+            args.rate.len() <= 2,
+            "Invalid frame rate. Use '/' as delimiter if needed, like 24 or 24000/1001"
+        );
+
         println!("Parsing RPU file...");
 
         let rpus = parse_rpu_file(input.clone())?;

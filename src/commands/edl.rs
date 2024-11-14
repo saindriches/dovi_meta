@@ -20,6 +20,7 @@ pub struct EdlArgs {
 
     #[clap(
     help = "Set the clip name in EDL",
+    required = false,
     value_hint = ValueHint::FilePath
     )]
     pub clip_name: String,
@@ -32,13 +33,11 @@ pub struct EdlArgs {
     pub force: bool,
 
     #[clap(
-    short = 'r',
-    long,
-    default_value = "24000/1001",
-    use_value_delimiter = true,
-    value_delimiter = '/',
-    num_args(1..=2),
-    help = "Set the frame rate. Format: integer NUM or NUM/DENOM"
+        short = 'r',
+        long,
+        default_value = "24000/1001",
+        value_delimiter = '/',
+        help = "Set the frame rate. Format: integer NUM or NUM/DENOM"
     )]
     pub rate: Vec<usize>,
 
