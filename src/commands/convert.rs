@@ -65,4 +65,12 @@ pub struct ConvertArgs {
         help = "Keep the offset of frames when --skip is set"
     )]
     pub keep_offset: bool,
+
+    #[clap(
+        short = 'o',
+        long,
+        default_value = "0",
+        help = "Set an number of frames to be added to the index"
+    )]
+    pub offset: usize,
 }

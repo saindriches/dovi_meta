@@ -88,7 +88,7 @@ impl Converter {
             if count > 0 {
                 if let Some(ref vdr) = rpu.vdr_dm_data {
                     if converter.frame_index >= args.skip {
-                        let frame_index = converter.frame_index - args.skip;
+                        let frame_index = converter.frame_index - args.skip + args.offset;
                         // TODO: Use real offset if first valid frame index is not 0?
 
                         if converter.first_valid_frame_index.is_none()
