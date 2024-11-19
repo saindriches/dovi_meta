@@ -1,14 +1,15 @@
 use serde::Serialize;
 
-use crate::cmv40::{DVDynamicData, Shot};
+use crate::cmv40::Shot;
+use crate::metadata::cmv40::ShotPluginNode;
 use crate::{cmv29, IntoCMV29, UUIDv4};
 
 #[derive(Debug, Clone, Default, Serialize)]
 pub struct Frame {
     #[serde(rename = "EditOffset")]
     pub edit_offset: usize,
-    #[serde(rename = "DVDynamicData")]
-    pub dv_dynamic_data: DVDynamicData,
+    #[serde(rename = "PluginNode")]
+    pub plugin_node: ShotPluginNode,
 }
 
 impl Frame {
@@ -18,7 +19,10 @@ impl Frame {
         dv_dynamic_data.level9 = None;
         Self {
             edit_offset: offset,
-            dv_dynamic_data,
+            plugin_node: ShotPluginNode {
+                dv_dynamic_data,
+                level11: None,
+            },
         }
     }
 }
@@ -34,7 +38,7 @@ impl IntoCMV29<cmv29::Frame> for Frame {
         cmv29::Frame {
             unique_id: UUIDv4::new(),
             edit_offset: self.edit_offset,
-            plugin_node: self.dv_dynamic_data.into(),
+            plugin_node: self.plugin_node.dv_dynamic_data.into(),
         }
     }
 }

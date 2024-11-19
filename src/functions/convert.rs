@@ -200,16 +200,29 @@ impl Converter {
                 converter.track.plugin_node.dv_global_data.target_displays = Some(targets);
             }
 
-            // FIXME: THE IMPLEMENTATION FOR LEVEL5 IS WRONG !!!
             let mut level5_map = HashMap::new();
             let mut level11_map = HashMap::new();
 
             shots.iter().for_each(|shot| {
+                let mut shot_level_duration = shot.record.duration;
+
+                if let Some(ref frames) = shot.frames {
+                    shot_level_duration -= frames.len();
+
+                    frames.iter().for_each(|frame| {
+                        *level5_map
+                            .entry(&frame.plugin_node.dv_dynamic_data.level5)
+                            .or_insert(0) += 1_usize;
+
+                        *level11_map.entry(&frame.plugin_node.level11).or_insert(0) += 1_usize;
+                    });
+                }
+
                 *level5_map
                     .entry(&shot.plugin_node.dv_dynamic_data.level5)
-                    .or_insert(0) += 1_usize;
+                    .or_insert(0) += shot_level_duration;
 
-                *level11_map.entry(&shot.plugin_node.level11).or_insert(0) += 1_usize;
+                *level11_map.entry(&shot.plugin_node.level11).or_insert(0) += shot_level_duration;
             });
 
             // converter.level5 = Some(Self::get_global_ar(level5_map, canvas));
@@ -222,24 +235,28 @@ impl Converter {
             // and remove them in shot-level.
             shots.iter_mut().for_each(|shot| {
                 let shot_level5 = shot.plugin_node.dv_dynamic_data.level5.clone();
-
                 if shot_level5 == converter.level5 {
                     shot.plugin_node.dv_dynamic_data.level5 = None;
                 };
 
+                shot.plugin_node.level11 = None;
+
+                // Level 5 can not exist in per-frame metadata anyway,
+                // but it's not our responsibility to validate it here.
+                // TODO: test case
                 if let Some(ref mut frames) = shot.frames {
                     frames.iter_mut().for_each(|frame| {
-                        let frame_level5 = frame.dv_dynamic_data.level5.clone();
+                        let plugin_node = &mut frame.plugin_node;
+                        let dv_dynamic_data = &mut plugin_node.dv_dynamic_data;
 
+                        let frame_level5 = dv_dynamic_data.level5.clone();
                         if frame_level5 == converter.level5 || frame_level5 == shot_level5 {
-                            frame.dv_dynamic_data.level5 = None;
+                            dv_dynamic_data.level5 = None;
                         }
+
+                        plugin_node.level11 = None;
                     })
                 }
-
-                if shot.plugin_node.level11 == converter.level11 {
-                    shot.plugin_node.level11 = None;
-                };
             });
         }
 

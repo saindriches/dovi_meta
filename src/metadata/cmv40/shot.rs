@@ -47,20 +47,15 @@ impl Shot {
     }
 
     pub fn append_metadata(&mut self, other: &Self) {
-        match &mut self.frames {
-            Some(ref mut frames) => {
-                // Always parse per-frame metadata until next shot
-                let offset = self.record.duration - 1;
-                let new_frame = Frame::with_offset(other, offset);
-                frames.push(new_frame);
-            }
-            None => {
-                if self.plugin_node != other.plugin_node {
-                    self.frames = Some(Vec::new());
-                    // FIXME: Recursive
-                    self.append_metadata(other);
-                }
-            }
+        if self.frames.is_none() && self.plugin_node != other.plugin_node {
+            self.frames = Some(Vec::new());
+        }
+
+        // Always parse per-frame metadata until next shot
+        if let Some(ref mut frames) = self.frames {
+            let offset = self.record.duration - 1;
+            let new_frame = Frame::with_offset(other, offset);
+            frames.push(new_frame);
         }
     }
 }
