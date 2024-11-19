@@ -1,15 +1,21 @@
-use vergen::EmitBuilder;
+use anyhow::Result;
+use vergen_gitcl::{Emitter, GitclBuilder};
 
-fn main() {
-    let mut emit_builder = EmitBuilder::builder();
-    emit_builder.fail_on_error();
-    emit_builder.git_describe(true, true, Some("[0-9]*"));
+fn main() -> Result<()> {
+    let gitcl = GitclBuilder::default()
+        .describe(true, true, Some("[0-9]*"))
+        .build()?;
 
-    // Generate the instructions
-    if let Err(e) = emit_builder.emit() {
+    let gitcl_res = Emitter::default()
+        .idempotent()
+        .fail_on_error()
+        .add_instructions(&gitcl)
+        .and_then(|emitter| emitter.emit());
+
+    if let Err(e) = gitcl_res {
         eprintln!("error occured while generating instructions: {e:?}");
-        EmitBuilder::builder()
-            .emit()
-            .expect("non-git vergen should succeed");
+        Emitter::default().idempotent().fail_on_error().emit()?;
     }
+
+    Ok(())
 }

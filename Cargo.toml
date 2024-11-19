@@ -11,19 +11,20 @@ build = "build.rs"
 num-traits = "0.2.19"
 num-derive = "0.4.2"
 
-uuid = { version = "1.8.0", features = ["v4"] }
+uuid = { version = "1.11.0", features = ["v4"] }
 
-dolby_vision = "3.3.0"
+dolby_vision = "3.3.1"
 # TODO: Use timecode as unique id, as an option.
 vtc = "0.1.13"
 chrono = "0.4.38"
-serde = { version = "1.0.203", features = ["derive"] }
+serde = { version = "1.0.215", features = ["derive"] }
 serde-aux = "4.5.0"
-quick-xml = { version = "0.32.0", features = ["serialize"]}
+quick-xml = { version = "0.37.1", features = ["serialize"] }
 
-clap = { version = "4.5.7", features = ["derive", "wrap_help"] }
-anyhow = "1.0.70"
+clap = { version = "4.5.21", features = ["derive", "wrap_help"] }
+anyhow = "1.0.86"
 itertools = "0.13.0"
 
 [build-dependencies]
-vergen = { version = "8.2.4", features = ["build", "git", "gitcl"] }
+anyhow = "1.0.93"
+vergen-gitcl = { version = "1.0.0", default-features = false, features = ["build"] }
