@@ -70,7 +70,7 @@ pub struct ConvertArgs {
         short = 'o',
         long,
         default_value = "0",
-        help = "Set an number of frames to be added to the index"
+        help = "Set the number of frames to be added to the index"
     )]
     pub offset: usize,
 }

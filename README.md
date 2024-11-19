@@ -54,6 +54,8 @@ Currently, the available subcommand is **`convert`** and **`edl`**.
   * `-t`, `--skip`            Set the number of frames to be skipped from start
     - Default value is `0`
   * `-n`, `--count`           Set the number of frames to be parsed explicitly
+  * `-o`, `--offset`          Set the number of frames to be added to the index
+    - Default value is `0`
 
   **Flags**
   * `-6`, `--use-level6`      Use MaxCLL and MaxFALL from RPU, if possible
