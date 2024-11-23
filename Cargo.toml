@@ -1,6 +1,6 @@
 [package]
 name = "dovi_meta"
-version = "0.3.0"
+version = "0.3.1"
 edition = "2021"
 authors = ["Rainbaby"]
 rust-version = "1.79.0"
@@ -22,7 +22,7 @@ serde-aux = "4.5.0"
 quick-xml = { version = "0.37.1", features = ["serialize"] }
 
 clap = { version = "4.5.21", features = ["derive", "wrap_help"] }
-anyhow = "1.0.86"
+anyhow = "1.0.93"
 itertools = "0.13.0"
 
 [build-dependencies]
