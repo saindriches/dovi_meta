@@ -13,6 +13,15 @@ pub struct Level3 {
     pub l1_offset: MDFType<ImageCharacter>,
 }
 
+impl Default for Level3 {
+    fn default() -> Self {
+        Self {
+            level: 3,
+            l1_offset: Default::default(),
+        }
+    }
+}
+
 impl From<&ExtMetadataBlockLevel3> for Level3 {
     fn from(block: &ExtMetadataBlockLevel3) -> Self {
         Self {

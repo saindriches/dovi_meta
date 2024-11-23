@@ -76,7 +76,7 @@ impl IntoIterator for TrimSixField {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Default)]
 pub struct ImageCharacter([f32; 3]);
 
 impl ImageCharacter {

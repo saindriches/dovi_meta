@@ -4,6 +4,7 @@ use serde::Serialize;
 
 use crate::cmv40::Frame;
 use crate::levels::*;
+use crate::metadata::update_levels;
 use crate::{cmv29, IntoCMV29, UUIDv4};
 
 #[derive(Debug, Clone, Default, Serialize)]
@@ -54,7 +55,10 @@ impl Shot {
         // Always parse per-frame metadata until next shot
         if let Some(ref mut frames) = self.frames {
             let offset = self.record.duration - 1;
-            let new_frame = Frame::with_offset(other, offset);
+            let mut new_frame = Frame::with_offset(other, offset);
+            new_frame
+                .plugin_node
+                .update_per_frame_default_metadata(&self.plugin_node);
             frames.push(new_frame);
         }
     }
@@ -98,6 +102,21 @@ impl ShotPluginNode {
         Self {
             dv_dynamic_data: DVDynamicData::with_canvas(vdr, canvas),
             level11,
+        }
+    }
+
+    fn update_per_frame_default_metadata(&mut self, reference: &Self) {
+        update_levels(
+            &mut self.dv_dynamic_data.level2,
+            &reference.dv_dynamic_data.level2,
+        );
+        update_levels(
+            &mut self.dv_dynamic_data.level8,
+            &reference.dv_dynamic_data.level8,
+        );
+
+        if self.dv_dynamic_data.level3.is_none() {
+            self.dv_dynamic_data.level3 = Some(Level3::default());
         }
     }
 }

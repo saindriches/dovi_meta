@@ -1,10 +1,10 @@
 use dolby_vision::rpu::extension_metadata::blocks::ExtMetadataBlockLevel8;
 use serde::Serialize;
 
+use super::TrimSixField;
+use crate::metadata::WithTid;
 use crate::MDFType;
 use crate::MDFType::CMV40;
-
-use super::TrimSixField;
 
 #[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct Level8 {
@@ -25,6 +25,24 @@ pub struct Level8 {
     // Format: f32 f32 f32 f32 f32 f32
     #[serde(rename = "HueVectorField")]
     pub hue_vector_field: MDFType<TrimSixField>,
+}
+
+impl WithTid for Level8 {
+    fn tid(&self) -> usize {
+        self.tid as usize
+    }
+
+    fn with_tid(tid: usize) -> Self {
+        Self {
+            level: 8,
+            tid: tid as u8,
+            l8_trim: Default::default(),
+            mid_contrast_bias: 0.0,
+            highlight_clipping: 0.0,
+            sat_vector_field: Default::default(),
+            hue_vector_field: Default::default(),
+        }
+    }
 }
 
 impl From<&ExtMetadataBlockLevel8> for Level8 {

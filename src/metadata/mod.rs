@@ -374,3 +374,23 @@ impl IntoCMV29<Self> for Primaries {
         }
     }
 }
+
+fn update_levels<T: WithTid>(a: &mut Option<Vec<T>>, b: &Option<Vec<T>>) {
+    if let Some(b_vec) = b {
+        if a.is_none() {
+            *a = Some(b_vec.iter().map(|level| T::with_tid(level.tid())).collect());
+        } else if let Some(a_vec) = a {
+            let a_tids: Vec<_> = a_vec.iter().map(|level| level.tid()).collect();
+            for level in b_vec {
+                if !a_tids.contains(&level.tid()) {
+                    a_vec.push(T::with_tid(level.tid()));
+                }
+            }
+        }
+    }
+}
+
+pub(crate) trait WithTid {
+    fn tid(&self) -> usize;
+    fn with_tid(tid: usize) -> Self;
+}

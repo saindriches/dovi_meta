@@ -2,20 +2,33 @@ use dolby_vision::rpu::extension_metadata::blocks::ExtMetadataBlockLevel2;
 use serde::ser::SerializeStruct;
 use serde::{Serialize, Serializer};
 
+use super::TrimSixField;
 use crate::display::find_target_id;
 use crate::f32_from_rpu_u12_with_bias;
 use crate::metadata::display::Characteristics;
 use crate::metadata::MDFType::*;
-use crate::metadata::{IntoCMV29, MDFType};
+use crate::metadata::{IntoCMV29, MDFType, WithTid};
 
-use super::TrimSixField;
-
-#[derive(Debug, Clone, PartialEq, Default)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Level2 {
     pub level: u8,
     pub tid: usize,
     // Format: 0 0 0 f32 f32 f32 f32 f32 f32
     pub trim: MDFType<TrimSixField>,
+}
+
+impl WithTid for Level2 {
+    fn tid(&self) -> usize {
+        self.tid
+    }
+
+    fn with_tid(tid: usize) -> Self {
+        Self {
+            level: 2,
+            tid,
+            trim: Default::default(),
+        }
+    }
 }
 
 impl Serialize for Level2 {
